@@ -17,77 +17,91 @@ import chapter6.logging.InitApplication;
 
 public class UserMessageDao {
 
-    /**
-    * ロガーインスタンスの生成
-    */
-    Logger log = Logger.getLogger("twitter");
+	/**
+	* ロガーインスタンスの生成
+	*/
+	Logger log = Logger.getLogger("twitter");
 
-    /**
-    * デフォルトコンストラクタ
-    * アプリケーションの初期化を実施する。
-    */
-    public UserMessageDao() {
-        InitApplication application = InitApplication.getInstance();
-        application.init();
+	/**
+	* デフォルトコンストラクタ
+	* アプリケーションの初期化を実施する。
+	*/
+	public UserMessageDao() {
+		InitApplication application = InitApplication.getInstance();
+		application.init();
 
-    }
+	}
 
-    public List<UserMessage> select(Connection connection, int num) {
+	public List<UserMessage> select(Connection connection, Integer id, int num) {
 
-	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
-        " : " + new Object(){}.getClass().getEnclosingMethod().getName());
+		log.info(new Object() {
+		}.getClass().getEnclosingClass().getName() +
+				" : " + new Object() {
+				}.getClass().getEnclosingMethod().getName());
 
-        PreparedStatement ps = null;
-        try {
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT ");
-            sql.append("    messages.id as id, ");
-            sql.append("    messages.text as text, ");
-            sql.append("    messages.user_id as user_id, ");
-            sql.append("    users.account as account, ");
-            sql.append("    users.name as name, ");
-            sql.append("    messages.created_date as created_date ");
-            sql.append("FROM messages ");
-            sql.append("INNER JOIN users ");
-            sql.append("ON messages.user_id = users.id ");
-            sql.append("ORDER BY created_date DESC limit " + num);
+		PreparedStatement ps = null;
+		try {
 
-            ps = connection.prepareStatement(sql.toString());
+			StringBuilder sql = new StringBuilder();
 
-            ResultSet rs = ps.executeQuery();
+			sql.append("SELECT ");
+			sql.append("    messages.id as id, ");
+			sql.append("    messages.text as text, ");
+			sql.append("    messages.user_id as user_id, ");
+			sql.append("    users.account as account, ");
+			sql.append("    users.name as name, ");
+			sql.append("    messages.created_date as created_date ");
+			sql.append("FROM messages ");
+			sql.append("INNER JOIN users ");
+			sql.append("ON messages.user_id = users.id ");
 
-            List<UserMessage> messages = toUserMessages(rs);
-            return messages;
-        } catch (SQLException e) {
-		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
-            throw new SQLRuntimeException(e);
-        } finally {
-            close(ps);
-        }
-    }
+			//特定のユーザーのつぶやきだけ見る
+			if (id != null) {
+				sql.append("WHERE messages.user_id = ? ");
+			}
 
-    private List<UserMessage> toUserMessages(ResultSet rs) throws SQLException {
+			sql.append("ORDER BY created_date DESC limit " + num);
 
+			ps = connection.prepareStatement(sql.toString());
+			if (id != null) {
+				ps.setInt(1, id);
+			}
 
-	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
-        " : " + new Object(){}.getClass().getEnclosingMethod().getName());
+			ResultSet rs = ps.executeQuery();
+			List<UserMessage> messages = toUserMessages(rs);
+			return messages;
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, new Object() {
+			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+			throw new SQLRuntimeException(e);
+		} finally {
+			close(ps);
+		}
+	}
 
-        List<UserMessage> messages = new ArrayList<UserMessage>();
-        try {
-            while (rs.next()) {
-                UserMessage message = new UserMessage();
-                message.setId(rs.getInt("id"));
-                message.setText(rs.getString("text"));
-                message.setUserId(rs.getInt("user_id"));
-                message.setAccount(rs.getString("account"));
-                message.setName(rs.getString("name"));
-                message.setCreatedDate(rs.getTimestamp("created_date"));
+	private List<UserMessage> toUserMessages(ResultSet rs) throws SQLException {
 
-                messages.add(message);
-            }
-            return messages;
-        } finally {
-            close(rs);
-        }
-    }
+		log.info(new Object() {
+		}.getClass().getEnclosingClass().getName() +
+				" : " + new Object() {
+				}.getClass().getEnclosingMethod().getName());
+
+		List<UserMessage> messages = new ArrayList<UserMessage>();
+		try {
+			while (rs.next()) {
+				UserMessage message = new UserMessage();
+				message.setId(rs.getInt("id"));
+				message.setText(rs.getString("text"));
+				message.setUserId(rs.getInt("user_id"));
+				message.setAccount(rs.getString("account"));
+				message.setName(rs.getString("name"));
+				message.setCreatedDate(rs.getTimestamp("created_date"));
+
+				messages.add(message);
+			}
+			return messages;
+		} finally {
+			close(rs);
+		}
+	}
 }
