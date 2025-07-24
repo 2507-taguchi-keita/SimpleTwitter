@@ -63,4 +63,32 @@ public class MessageDao {
             close(ps);
         }
     }
+
+    //deleteメソッドで、ConnectionオブジェクトとString型のmessageIdを受け取り、Userオブジェクトを返すこと
+    public void delete(Connection connection, String messageId) {
+		log.info(new Object() {
+		}.getClass().getEnclosingClass().getName() +
+				" : " + new Object() {
+				}.getClass().getEnclosingMethod().getName());
+
+		PreparedStatement ps = null;
+		try {
+			StringBuilder sql = new StringBuilder();
+			sql.append("DELETE FROM messages ");
+			sql.append("WHERE messages.id = ? ");
+
+            ps = connection.prepareStatement(sql.toString());
+
+            ps.setString(1, messageId);
+
+            ps.executeUpdate();
+
+		} catch (SQLException e) {
+		log.log(Level.SEVERE, new Object(){}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+            throw new SQLRuntimeException(e);
+        } finally {
+            close(ps);
+        }
+		return;
+    }
 }
