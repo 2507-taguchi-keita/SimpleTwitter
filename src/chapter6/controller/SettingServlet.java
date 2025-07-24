@@ -115,6 +115,8 @@ public class SettingServlet extends HttpServlet {
 		String name = user.getName();
 		String account = user.getAccount();
 		String email = user.getEmail();
+		//Userserviceがaccountに一致しているユーザーをDBから検索し、該当ユーザーがいればUserオブジェクトを返す。
+		User accountCheck = new UserService().select(account);
 
 		if (!StringUtils.isEmpty(name) && (20 < name.length())) {
 			errorMessages.add("名前は20文字以下で入力してください");
@@ -124,6 +126,13 @@ public class SettingServlet extends HttpServlet {
 		} else if (20 < account.length()) {
 			errorMessages.add("アカウント名は20文字以下で入力してください");
 		}
+
+		//実践問題３ アカウント名の重複チェック
+		//左(アカウントがすでにDBに存在している) 右(自分自身の情報と一致していない)
+		if (accountCheck != null && accountCheck.getId() != user.getId()) {
+			errorMessages.add("すでに存在するアカウントです");
+		}
+
 		if (!StringUtils.isEmpty(email) && (50 < email.length())) {
 			errorMessages.add("メールアドレスは50文字以下で入力してください");
 		}

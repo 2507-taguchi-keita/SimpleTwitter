@@ -58,6 +58,8 @@ public class SignUpServlet extends HttpServlet {
 
 		List<String> errorMessages = new ArrayList<String>();
 
+		//getUserが何かを調べるために72行目からgetUserメソッドで確認
+		//getUserメソッド内に入っているものをuserという戻り値に入れる
 		User user = getUser(request);
 		if (!isValid(user, errorMessages)) {
 			request.setAttribute("errorMessages", errorMessages);
@@ -86,6 +88,10 @@ public class SignUpServlet extends HttpServlet {
 
 	private boolean isValid(User user, List<String> errorMessages) {
 
+		//SELECT文で、usersテーブルからユーザーの情報を取得し、同じ名前のアカウントが無いかを調べる
+		//UserServiceやUserDaoに入っているSQL文
+
+
 		log.info(new Object() {
 		}.getClass().getEnclosingClass().getName() +
 				" : " + new Object() {
@@ -95,6 +101,9 @@ public class SignUpServlet extends HttpServlet {
 		String account = user.getAccount();
 		String password = user.getPassword();
 		String email = user.getEmail();
+		//入力されたアカウント名に一致するユーザーをデータベースから探す。見つかればUserオブジェクトが返ってきて
+		//accountCheckに入る。
+		User accountCheck = new UserService().select(account);
 
 		if (!StringUtils.isEmpty(name) && (20 < name.length())) {
 			errorMessages.add("名前は20文字以下で入力してください");
@@ -104,6 +113,12 @@ public class SignUpServlet extends HttpServlet {
 			errorMessages.add("アカウント名を入力してください");
 		} else if (20 < account.length()) {
 			errorMessages.add("アカウント名は20文字以下で入力してください");
+		}
+
+		//同じアカウントがあったら１，なければ０
+		//「アカウント名は他の誰かが使っているか」を確認。
+		if(accountCheck != null) {
+			errorMessages.add("すでに存在するアカウントです");
 		}
 
 		if (StringUtils.isEmpty(password)) {
