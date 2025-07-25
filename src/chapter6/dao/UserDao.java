@@ -119,6 +119,7 @@ public class UserDao {
 		}
 	}
 
+	//ResultSet型(実行結果)を、listのuser型に詰替える
 	private List<User> toUsers(ResultSet rs) throws SQLException {
 
 		log.info(new Object() {
@@ -129,7 +130,10 @@ public class UserDao {
 		List<User> users = new ArrayList<User>();
 		try {
 			while (rs.next()) {
+				//1つbeanを展開
 				User user = new User();
+				
+				//rs(実行結果)を、userにset
 				user.setId(rs.getInt("id"));
 				user.setAccount(rs.getString("account"));
 				user.setName(rs.getString("name"));
@@ -163,15 +167,20 @@ public class UserDao {
 
 			ps.setInt(1, id);
 
+			//executeQuery()…SELECT文を実行、
 			ResultSet rs = ps.executeQuery();
 
+			//toUsers…ResultSet型(実行結果)を、listのuser型に詰替え
 			List<User> users = toUsers(rs);
+			
+			
 			if (users.isEmpty()) {
 				return null;
 			} else if (2 <= users.size()) {
 				log.log(Level.SEVERE, "ユーザーが重複しています", new IllegalStateException());
 				throw new IllegalStateException("ユーザーが重複しています");
 			} else {
+				
 				return users.get(0);
 			}
 		} catch (SQLException e) {

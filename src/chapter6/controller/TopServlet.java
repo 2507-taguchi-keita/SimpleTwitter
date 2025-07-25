@@ -42,8 +42,12 @@ public class TopServlet extends HttpServlet {
 		  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
 			        " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
+		// isShowMessageForm…つぶやきのフォームを展開するか否かを判断するための変数
 		boolean isShowMessageForm = false;
+		
+		//sessionから、ログイン情報を取得
 		User user = (User) request.getSession().getAttribute("loginUser");
+		//ログインしていれば、isShowMessageFormをtrueにする
 		if (user != null) {
 			isShowMessageForm = true;
 		}

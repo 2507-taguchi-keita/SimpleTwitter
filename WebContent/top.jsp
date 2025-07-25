@@ -51,6 +51,7 @@
 
 
 	<div class="form-area">
+		<!--  isShowMessageForm…ログイン後、つぶやきのフォームを展開する -->
 		<c:if test="${ isShowMessageForm }">
 			<form action="message" method="post">
 				いま、どうしてる？<br />
@@ -63,8 +64,8 @@
 		<c:forEach items="${messages}" var="message">
 			<div class="message">
 				<div class="account-name">
-					<span class="account"> <a
-						href="./?user_id=<c:out value="${message.userId}"/> "> <c:out
+					<span class="account">
+					<a href="./?user_id=<c:out value="${message.userId}"/> "> <c:out
 								value="${message.account}" />
 					</a>
 					</span> <span class="name"><c:out value="${message.name}" /></span>
@@ -76,10 +77,14 @@
 					<fmt:formatDate value="${message.createdDate}"
 						pattern="yyyy/MM/dd HH:mm:ss" />
 				</div>
-				<form action="deleteMessage" method="post">
-					<input name="messageId" value="${message.id}" type="hidden"/>
-					<input type="submit" value="削除">
-				</form>
+					<form action="deleteMessage" method="post">
+						<input name="messageId" value="${message.id}" type="hidden"/>
+						<input type="submit" value="削除">
+					</form>
+					<form action="edit" method="post">
+						<input name="messageId" value="${message.id}" type="hidden"/>
+						<input type="submit" value="編集">
+					</form>
 			</div>
 		</c:forEach>
 	</div>

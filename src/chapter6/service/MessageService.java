@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 
 import chapter6.beans.Message;
-import chapter6.beans.User;
 import chapter6.beans.UserMessage;
 import chapter6.dao.MessageDao;
 import chapter6.dao.UserMessageDao;
@@ -61,6 +60,7 @@ public class MessageService {
 		}
 	}
 
+	/*top画面表示時、レコードを全件取得*/
 	public List<UserMessage> select(String userId) {
 
 		log.info(new Object() {
@@ -116,7 +116,7 @@ public class MessageService {
 		Connection connection = null;
 		try {
 			connection = getConnection();
-			User user = new MessageDao().delete(connection, messageId);
+			new MessageDao().delete(connection, messageId);
 			commit(connection);
 
 		} catch (RuntimeException e) {
@@ -135,4 +135,63 @@ public class MessageService {
 		}
 	}
 
+	/*編集画面表示時、レコードを1件取得*/
+	public Message select(Integer messageId) {
+
+		log.info(new Object() {
+		}.getClass().getEnclosingClass().getName() +
+				" : " + new Object() {
+				}.getClass().getEnclosingMethod().getName());
+
+		Connection connection = null;
+		try {
+			connection = getConnection();
+
+			//daoを呼出し　messageに格納
+			Message message = new MessageDao().select(connection, messageId);
+			commit(connection);
+
+			return message;
+		} catch (RuntimeException e) {
+			rollback(connection);
+			log.log(Level.SEVERE, new Object() {
+			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+			throw e;
+		} catch (Error e) {
+			rollback(connection);
+			log.log(Level.SEVERE, new Object() {
+			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+			throw e;
+		} finally {
+			close(connection);
+		}
+
+	}
+
+	public void update(String messageId, String messageText, String updateddate) {
+		log.info(new Object() {
+		}.getClass().getEnclosingClass().getName() +
+				" : " + new Object() {
+				}.getClass().getEnclosingMethod().getName());
+
+		Connection connection = null;
+		try {
+			connection = getConnection();
+			new MessageDao().update(connection, messageId, messageText, updateddate);
+			commit(connection);
+		} catch (RuntimeException e) {
+			rollback(connection);
+			log.log(Level.SEVERE, new Object() {
+			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+			throw e;
+		} catch (Error e) {
+			rollback(connection);
+			log.log(Level.SEVERE, new Object() {
+			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+			throw e;
+		} finally {
+			close(connection);
+		}
+
+	}
 }
