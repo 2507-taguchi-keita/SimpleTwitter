@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import chapter6.beans.Message;
+import chapter6.exception.NoRowsUpdatedRuntimeException;
 import chapter6.exception.SQLRuntimeException;
 import chapter6.logging.InitApplication;
 
@@ -114,6 +115,10 @@ public class MessageDao {
 
 				//rs(実行結果)を、userにset
 				message.setId(rs.getInt("id"));
+				message.setUserId(rs.getInt("user_id"));
+				message.setText(rs.getString("text"));
+				message.setCreatedDate(rs.getTimestamp("created_date"));
+				message.setUpdatedDate(rs.getTimestamp("updated_date"));
 
 				messages.add(message);
 			}
@@ -123,7 +128,6 @@ public class MessageDao {
 		}
 
 	}
-
 
 	public Message select(Connection connection, Integer messageId) {
 		log.info(new Object() {
@@ -135,12 +139,12 @@ public class MessageDao {
 		try {
 			//SELECT * FROM messages…messagesテーブルから情報を取得
 			//WHERE messages.id = ?…条件として、messageテーブルのidを指定
-	        String sql = "SELECT * FROM messages WHERE messages.id = ?";
+			String sql = "SELECT * FROM messages WHERE id = ?";
 
-	        ps = connection.prepareStatement(sql);
-	        ps.setInt(1, messageId);
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, messageId);
 
-	        //sql実行、実行結果を格納
+			//sql実行、実行結果を格納
 			ResultSet rs = ps.executeQuery();
 
 			//toMessage…ResultSet型(実行結果)を、listのmessage型に詰替え
@@ -149,16 +153,17 @@ public class MessageDao {
 			//serviceへreturn
 			return message.get(0);
 		} catch (SQLException e) {
-		log.log(Level.SEVERE, new Object() {
-		}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
-		throw new SQLRuntimeException(e);
+			log.log(Level.SEVERE, new Object() {
+			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
+			throw new SQLRuntimeException(e);
 		} finally {
 			close(ps);
 		}
 
 	}
 
-	public void update(Connection connection, String messageId, String messageText, String updateddate) {
+	//編集画面にてつぶやきを編集し、つぶやきを更新する
+	public void update(Connection connection, String messageId, String messageText) {
 
 		log.info(new Object() {
 		}.getClass().getEnclosingClass().getName() +
@@ -167,17 +172,25 @@ public class MessageDao {
 
 		PreparedStatement ps = null;
 		try {
+
+			StringBuilder sql = new StringBuilder();
 			//更新日時も更新する
-			String sql = "UPDATE messages SET messages.text = ?, messages.updated_date = ?, WHERE messages.id = ?";
+			sql.append("UPDATE messages SET ");
+			sql.append("    text = ?, ");
+			sql.append("    updated_date = CURRENT_TIMESTAMP ");
+			sql.append("WHERE id = ?");
 
-					//preparedstatementオブジェクトを取得
-					ps = connection.prepareStatement(sql);
-					//バインド変数に値を設定する
-					ps.setString(1, messageText);
-					ps.setString(2, updateddate);
-					ps.setString(3, messageId);
+			//preparedstatementオブジェクトを取得
+			ps = connection.prepareStatement(sql.toString());
+			//バインド変数に値を設定する
+			ps.setString(1, messageText);
+			ps.setString(2, messageId);
 
-					ps.executeUpdate();
+			int count = ps.executeUpdate();
+			if (count == 0) {
+				log.log(Level.SEVERE, "更新対象のレコードが存在しません", new NoRowsUpdatedRuntimeException());
+				throw new NoRowsUpdatedRuntimeException();
+			}
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, new Object() {
 			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
@@ -185,6 +198,5 @@ public class MessageDao {
 		} finally {
 			close(ps);
 		}
-    }
-
+	}
 }
