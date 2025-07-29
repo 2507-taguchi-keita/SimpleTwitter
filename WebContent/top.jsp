@@ -70,11 +70,9 @@
 					</a>
 					</span> <span class="name"><c:out value="${message.name}" /></span>
 				</div>
-				<div class="text">
-					<c:out value="${message.text}" />
-				</div>
+				<div class="text" style="white-space: pre-wrap;"><c:out value="${message.text}" /></div>
 				<div class="date">
-					<fmt:formatDate value="${message.createdDate}"
+					<fmt:formatDate value="${message.updatedDate}"
 						pattern="yyyy/MM/dd HH:mm:ss" />
 				</div>
 				<c:if test="${loginUser.id == message.userId}">

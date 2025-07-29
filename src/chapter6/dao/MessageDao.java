@@ -150,8 +150,13 @@ public class MessageDao {
 			//toMessage…ResultSet型(実行結果)を、listのmessage型に詰替え
 			List<Message> message = toMessages(rs);
 
-			//serviceへreturn
-			return message.get(0);
+			if(message.isEmpty()) {
+				return null;
+			} else {
+				//serviceへreturn
+				return message.get(0);
+			}
+
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, new Object() {
 			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
@@ -162,8 +167,8 @@ public class MessageDao {
 
 	}
 
-	//編集画面にてつぶやきを編集し、つぶやきを更新する
-	public void update(Connection connection, String messageId, String messageText) {
+	//編集画面にてつぶやきを編集し、つぶやきを更新するs
+	public void update(Connection connection, String messagesText, Integer messagesId) {
 
 		log.info(new Object() {
 		}.getClass().getEnclosingClass().getName() +
@@ -183,8 +188,8 @@ public class MessageDao {
 			//preparedstatementオブジェクトを取得
 			ps = connection.prepareStatement(sql.toString());
 			//バインド変数に値を設定する
-			ps.setString(1, messageText);
-			ps.setString(2, messageId);
+			ps.setString(1, messagesText);
+			ps.setInt(2, messagesId);
 
 			int count = ps.executeUpdate();
 			if (count == 0) {

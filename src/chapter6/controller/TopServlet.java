@@ -39,6 +39,7 @@ public class TopServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
 
+		//現在のクラス名とメソッド名を文字列として取得し、ログに記録する
 		  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
 			        " : " + new Object(){}.getClass().getEnclosingMethod().getName());
 
