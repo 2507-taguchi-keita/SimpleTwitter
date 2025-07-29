@@ -167,7 +167,7 @@ public class MessageDao {
 
 	}
 
-	//編集画面にてつぶやきを編集し、つぶやきを更新するs
+	//編集画面にてつぶやきを編集し、つぶやきを更新する
 	public void update(Connection connection, String messagesText, Integer messagesId) {
 
 		log.info(new Object() {
@@ -179,9 +179,10 @@ public class MessageDao {
 		try {
 
 			StringBuilder sql = new StringBuilder();
-			//更新日時も更新する
+			//更新日時も更新する→DBのテーブルで確認
 			sql.append("UPDATE messages SET ");
 			sql.append("    text = ?, ");
+			//updated_dateは、引数で渡しておらず、ユーザーが変更するものではないため
 			sql.append("    updated_date = CURRENT_TIMESTAMP ");
 			sql.append("WHERE id = ?");
 

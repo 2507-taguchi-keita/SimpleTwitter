@@ -148,6 +148,7 @@ public class MessageService {
 			connection = getConnection();
 
 			//daoを呼出し　messageに格納
+			//selectメソッド
 			Message message = new MessageDao().select(connection, messageId);
 			commit(connection);
 

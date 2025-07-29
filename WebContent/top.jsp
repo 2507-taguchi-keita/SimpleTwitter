@@ -61,10 +61,12 @@
 		</c:if>
 	</div>
 	<div class="messages">
+	<%--forEachは繰り返し文 Servletから受け取ったList<UserMessage>型のmessagesを、messageという形に格納 --%>
 		<c:forEach items="${messages}" var="message">
 			<div class="message">
 				<div class="account-name">
 					<span class="account">
+					<%--messageのuserIdを表示する --%>
 					<a href="./?user_id=<c:out value="${message.userId}"/> "> <c:out
 								value="${message.account}" />
 					</a>
@@ -72,7 +74,7 @@
 				</div>
 				<div class="text" style="white-space: pre-wrap;"><c:out value="${message.text}" /></div>
 				<div class="date">
-					<fmt:formatDate value="${message.updatedDate}"
+					<fmt:formatDate value="${message.createdDate}"
 						pattern="yyyy/MM/dd HH:mm:ss" />
 				</div>
 				<c:if test="${loginUser.id == message.userId}">
