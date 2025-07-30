@@ -131,7 +131,6 @@ public class MessageService {
 			throw e;
 		} finally {
 			close(connection);
-
 		}
 	}
 

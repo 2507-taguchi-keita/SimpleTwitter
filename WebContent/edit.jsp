@@ -33,7 +33,6 @@
 			</div>
 		</c:if>
 	</div>
-
 	<c:if test="${ not empty errorMessages }">
 	<div class="errorMessages">
 		<ul>
@@ -42,21 +41,19 @@
 			</c:forEach>
 		</ul>
 	</div>
-
 	</c:if>
-
-		<div class="form-area">
-			<form action="edit" method="post">
-    			つぶやきの編集<br />
-    			<textarea name="text" cols="100" rows="5" class="tweet-box">${message.text}</textarea> <!-- 修正 -->
- 				<input name="messageId" value="${message.id}" type="hidden"/> <!-- 修正 -->
-    			<br />
-    			<input type="submit" value="更新">（140文字まで）
-    			<br />
-    			<a href="./">戻る</a>
-			</form>
-		</div>
-
+<%--インデントがずれている　タブとインデントがまざっている --%>
+	<div class="form-area">
+		<form action="edit" method="post">
+			つぶやきの編集<br />
+			<textarea name="text" cols="100" rows="5" class="tweet-box">${message.text}</textarea> <!-- 修正 -->
+ 			<input name="messageId" value="${message.id}" type="hidden"/> <!-- 修正 -->
+			<br />
+			<input type="submit" value="更新">（140文字まで）
+			<br />
+			<a href="./">戻る</a>
+		</form>
+	</div>
 	<div class="copyright">Copyright(c)TaguchiKeita</div>
 </body>
 </html>

@@ -10,20 +10,20 @@
         	<link href="css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-<div class="main-contents">
+	<div class="main-contents">
 
-    <c:if test="${ not empty errorMessages }">
-    <div class="errorMessages">
-        <ul>
-            <c:forEach items="${errorMessages}" var="errorMessage">
-                <li><c:out value="${errorMessage}" />
-            </c:forEach>
-        </ul>
-    </div>
-    </c:if>
+		<c:if test="${ not empty errorMessages }">
+		<div class="errorMessages">
+			<ul>
+				<c:forEach items="${errorMessages}" var="errorMessage">
+					<li><c:out value="${errorMessage}" />
+				</c:forEach>
+			</ul>
+		</div>
+		</c:if>
 
-    	<form action="setting" method="post"><br />
-        	<input name="id" value="${user.id}" id="id" type="hidden"/>
+ 		<form action="setting" method="post"><br />
+			<input name="id" value="${user.id}" id="id" type="hidden"/>
 
 			<label for="name">名前</label>
 			<input name="name" value="${user.name}" id="name"/>（名前はあなたの公開プロフィールに表示されます）<br />
@@ -44,7 +44,7 @@
 			<a href="./">戻る</a>
 		</form>
 
-        <div class="copyright"> Copyright(c)Your Name</div>
-     </div>
-    </body>
+		<div class="copyright"> Copyright(c)Your Name</div>
+	</div>
+</body>
 </html>
