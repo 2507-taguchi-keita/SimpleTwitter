@@ -61,23 +61,23 @@ public class EditServlet extends HttpServlet {
 		//出す条件が決まっている際はtry文ではなくif文
 		// 空 or 空白 or null チェック　数値じゃない事もまとめられる
 		if (StringUtils.isBlank(strMessageId) || !strMessageId.matches("^[0-9]+$")) {
-		    errorMessages.add("不正なパラメータが入力されました");
-		    session.setAttribute("errorMessages", errorMessages);
-		    response.sendRedirect("./"); // トップに戻る
-		    return;
+			errorMessages.add("不正なパラメータが入力されました");
+			session.setAttribute("errorMessages", errorMessages);
+			response.sendRedirect("./"); // トップに戻る
+			return;
 		}
 
 		// 数値に変換できるか
 		int messageId = Integer.parseInt(strMessageId);
 
-			// メッセージ取得
+		// メッセージ取得
 		Message message = new MessageService().select(messageId);
 		if (message == null) {
-		    // 存在しないID
-		    errorMessages.add("不正なパラメータが入力されました");
-		    session.setAttribute("errorMessages", errorMessages);
-		    response.sendRedirect("./"); // トップに戻る
-		    return;
+			// 存在しないID
+			errorMessages.add("不正なパラメータが入力されました");
+			session.setAttribute("errorMessages", errorMessages);
+			response.sendRedirect("./"); // トップに戻る
+			return;
 		}
 
 		// 正常時 → 編集画面へ

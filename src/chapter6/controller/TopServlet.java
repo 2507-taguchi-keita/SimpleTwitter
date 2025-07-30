@@ -1,6 +1,7 @@
 package chapter6.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import chapter6.beans.User;
 import chapter6.beans.UserMessage;
@@ -40,11 +42,16 @@ public class TopServlet extends HttpServlet {
 			throws IOException, ServletException {
 
 		//現在のクラス名とメソッド名を文字列として取得し、ログに記録する
-		  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
-			        " : " + new Object(){}.getClass().getEnclosingMethod().getName());
+		log.info(new Object() {
+		}.getClass().getEnclosingClass().getName() +
+				" : " + new Object() {
+				}.getClass().getEnclosingMethod().getName());
 
 		// isShowMessageForm…つぶやきのフォームを展開するか否かを判断するための変数
 		boolean isShowMessageForm = false;
+
+		HttpSession session = request.getSession();
+		List<String> errorMessages = new ArrayList<String>();
 
 		//sessionから、ログイン情報を取得
 		User user = (User) request.getSession().getAttribute("loginUser");
@@ -56,8 +63,38 @@ public class TopServlet extends HttpServlet {
 		String userId = request.getParameter("user_id");
 		List<UserMessage> messages = new MessageService().select(userId);
 
+		String comment = request.getParameter("comment");
+
 		request.setAttribute("messages", messages);
 		request.setAttribute("isShowMessageForm", isShowMessageForm);
 		request.getRequestDispatcher("/top.jsp").forward(request, response);
 	}
 }
+
+//	@Override
+//	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+//            throws IOException, ServletException {
+//
+//	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
+//        " : " + new Object(){}.getClass().getEnclosingMethod().getName());
+//
+//        HttpSession session = request.getSession();
+//        List<String> errorMessages = new ArrayList<String>();
+//
+//        String comment = request.getParameter("comment");
+//        if (!isValid(comment, errorMessages)) {
+//            session.setAttribute("errorMessages", errorMessages);
+//            response.sendRedirect("./");
+//            return;
+//        }
+//
+//        Message message = new Message();
+//        message.setText(comment);
+//
+//        User user = (User) session.getAttribute("loginUser");
+//        message.setUserId(user.getId());
+//
+//        new CommentService().insert(message);
+//        response.sendRedirect("./");
+//    }
+//}

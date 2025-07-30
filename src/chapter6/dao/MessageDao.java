@@ -150,7 +150,7 @@ public class MessageDao {
 			//toMessage…ResultSet型(実行結果)を、listのmessage型に詰替え
 			List<Message> message = toMessages(rs);
 
-			if(message.isEmpty()) {
+			if (message.isEmpty()) {
 				return null;
 			} else {
 				//serviceへreturn
