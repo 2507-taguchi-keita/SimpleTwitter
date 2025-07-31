@@ -1,7 +1,6 @@
 package chapter6.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,11 +9,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import chapter6.beans.User;
+import chapter6.beans.UserComment;
 import chapter6.beans.UserMessage;
 import chapter6.logging.InitApplication;
+import chapter6.service.CommentService;
 import chapter6.service.MessageService;
 
 @WebServlet(urlPatterns = { "/index.jsp" })
@@ -50,9 +50,6 @@ public class TopServlet extends HttpServlet {
 		// isShowMessageForm…つぶやきのフォームを展開するか否かを判断するための変数
 		boolean isShowMessageForm = false;
 
-		HttpSession session = request.getSession();
-		List<String> errorMessages = new ArrayList<String>();
-
 		//sessionから、ログイン情報を取得
 		User user = (User) request.getSession().getAttribute("loginUser");
 		//ログインしていれば、isShowMessageFormをtrueにする
@@ -61,11 +58,15 @@ public class TopServlet extends HttpServlet {
 		}
 
 		String userId = request.getParameter("user_id");
+		//messages→つぶやきの事を指す
 		List<UserMessage> messages = new MessageService().select(userId);
+
+		List<UserComment> comments = new CommentService().select();
 
 		String comment = request.getParameter("comment");
 
 		request.setAttribute("messages", messages);
+		request.setAttribute("comments", comments);
 		request.setAttribute("isShowMessageForm", isShowMessageForm);
 		request.getRequestDispatcher("/top.jsp").forward(request, response);
 	}

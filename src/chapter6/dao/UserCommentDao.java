@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.stream.events.Comment;
-
-import chapter6.beans.UserMessage;
+import chapter6.beans.UserComment;
 import chapter6.exception.SQLRuntimeException;
 import chapter6.logging.InitApplication;
 
@@ -34,33 +32,37 @@ public class UserCommentDao {
 
 	}
 
-	public List<Comment> select(Connection connection, Integer messageId){
+	public List<UserComment> select(Connection connection, int num){
 		log.info(new Object() {
 		}.getClass().getEnclosingClass().getName() +
 				" : " + new Object() {
 				}.getClass().getEnclosingMethod().getName());
 
 		PreparedStatement ps = null;
-		
+
 		try {
 			StringBuilder sql = new StringBuilder();
-			
+
 			sql.append("SELECT ");
 			sql.append("    comments.id as id, ");
 			sql.append("    comments.text as text, ");
 			sql.append("    comments.user_id as user_id, ");
 			sql.append("    comments.message_id as message_id, ");
-			sql.append("    comments.created_date as created_date ");
-			sql.append("    messages.updated_date as updated_date ");
-			sql.append("FROM messages ");
-			sql.append("INNER JOIN messages ");
-			sql.append("ON messages.id= comments.id ");
-			
+			sql.append("    users.account as account, ");
+			sql.append("    users.name as name, ");
+			sql.append("    comments.created_date as created_date, ");
+			sql.append("    comments.updated_date as updated_date ");
+			sql.append("FROM comments ");
+			sql.append("INNER JOIN users ");
+			sql.append("ON comments.user_id = users.id ");
+			sql.append("ORDER BY created_date DESC limit " + num);
+
 			ps = connection.prepareStatement(sql.toString());
-			
+
 			ResultSet rs = ps.executeQuery();
-			List<Comment> comments = toComments(rs);
+			List<UserComment> comments = toUserComments(rs);
 			return comments;
+
 		} catch (SQLException e) {
 			log.log(Level.SEVERE, new Object() {
 			}.getClass().getEnclosingClass().getName() + " : " + e.toString(), e);
@@ -69,28 +71,30 @@ public class UserCommentDao {
 			close(ps);
 		}
 	}
-	
-	private List<Comment> toComments(ResultSet rs) throws SQLException {
+
+	private List<UserComment> toUserComments(ResultSet rs) throws SQLException {
 
 		log.info(new Object() {
 		}.getClass().getEnclosingClass().getName() +
 				" : " + new Object() {
 				}.getClass().getEnclosingMethod().getName());
 
-		List<Comment> comments = new ArrayList<Comments>();
+		List<UserComment> comments = new ArrayList<UserComment>();
 		try {
 			while (rs.next()) {
-				UserMessage message = new UserMessage();
-				message.setId(rs.getInt("id"));
-				message.setText(rs.getString("text"));
-				message.setUserId(rs.getInt("user_id"));
-				message.setAccount(rs.getString("account"));
-				message.setName(rs.getString("name"));
-				message.setCreatedDate(rs.getTimestamp("created_date"));
+				UserComment comment = new UserComment();
+				comment.setId(rs.getInt("id"));
+				comment.setText(rs.getString("text"));
+				comment.setUserId(rs.getInt("user_id"));
+				comment.setMessageId(rs.getInt("message_id"));
+				comment.setAccount(rs.getString("account"));
+				comment.setName(rs.getString("name"));
+				comment.setCreatedDate(rs.getTimestamp("created_date"));
+				comment.setUpdatedDate(rs.getTimestamp("updated_date"));
 
-				messages.add(message);
+				comments.add(comment);
 			}
-			return messages;
+			return comments;
 		} finally {
 			close(rs);
 		}

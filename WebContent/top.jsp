@@ -42,13 +42,12 @@
 		<div class="errorMessages">
 			<ul>
 				<c:forEach items="${errorMessages}" var="errorMessage">
-					<li><c:out value="${errorMessage}" />
+					<li><c:out value="${errorMessage}" /></li>
 				</c:forEach>
 			</ul>
 		</div>
 		<c:remove var="errorMessages" scope="session" />
 	</c:if>
-
 
 	<div class="form-area">
 		<!--  isShowMessageForm…ログイン後、つぶやきのフォームを展開する -->
@@ -90,19 +89,34 @@
 					</form>
 				</c:if>
 			</div>
-			<%--つぶやきの返信を追加 --%>
-			<div class="comment">
-				<div class="form-area">
-					<c:if test="${ isShowMessageForm }">
-						<form action="comment" method="post">
-							このつぶやきに返信<br />
-								<textarea name="text" cols="100" rows="5" class="tweet-box"></textarea>
-								<input name="messageId" value="${message.id}" type="hidden"/>
-								<br /> <input type="submit" value="返信">（140文字まで）
-						</form>
+			<%--返信したメッセージを表示 --%>
+			 <div class="comments">
+				<c:forEach items="${comments}" var="comment">
+					<c:if test="${comment.messageId == message.id}">
+						<div class="comment">
+							<span class="account">
+							<a href="./?user_id=<c:out value="${message.userId}"/> "> <c:out
+								value="${comment.account}" />
+							</a>
+							</span><span class="name"><c:out value="${comment.name}" /></span>
+							<div class="text" style="white-space: pre-wrap;"><c:out value="${comment.text}" /></div>
+								<div class="date">
+									<fmt:formatDate value="${comment.createdDate}" pattern="yyyy/MM/dd HH:mm:ss" />
+								</div>
+						</div>
 					</c:if>
-				</div>
+				</c:forEach>
 			</div>
+
+			<!-- 返信フォーム -->
+			<c:if test="${isShowMessageForm}">
+				<form action="comment" method="post">
+					<label>このつぶやきに返信</label><br />
+					<textarea name="comment" cols="100" rows="5" class="tweet-box"></textarea><br />
+					<input type="hidden" name="messageId" value="${message.id}" />
+					<input type="submit" value="返信">（140文字まで）
+				</form>
+			</c:if>
 		</c:forEach>
 	</div>
 	<div class="copyright">Copyright(c)TaguchiKeita</div>

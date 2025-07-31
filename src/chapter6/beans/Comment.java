@@ -3,24 +3,34 @@ package chapter6.beans;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Message implements Serializable {
+public class Comment implements Serializable {
 
-    private int id;
-    private int userId;
-    private String text;
-    private Date createdDate;
-    private Date updatedDate;
+	private int id;
+	private String text;
+	private int userId;
+	private int messageId;
+	private Date createdDate;
+	private Date updatedDate;
 
-    // getter/setterは省略されているので、自分で記述しましょう。
-    //id
-    public int getId() {
-    	return id;
+	//id
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	//text
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+    	this.text = text;
     }
-    public void setId(int id) {
-    	this.id = id;
-    }
 
-    //useId
+	//useId
     public int getUserId() {
     	return userId;
     }
@@ -28,12 +38,12 @@ public class Message implements Serializable {
     	this.userId = userId;
     }
 
-    //text
-    public String getText() {
-    	return text;
+  //messageId
+    public int getMessageId() {
+    	return messageId;
     }
-    public void setText(String text) {
-    	this.text = text;
+    public void setMessageId(int messageId) {
+    	this.messageId = messageId;
     }
 
     //createdDate
@@ -51,5 +61,4 @@ public class Message implements Serializable {
     public void setUpdatedDate(Date updatedDate) {
     	this.updatedDate = updatedDate;
     }
-
 }

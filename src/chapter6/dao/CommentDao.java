@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import chapter6.beans.Message;
+import chapter6.beans.Comment;
 import chapter6.exception.SQLRuntimeException;
 import chapter6.logging.InitApplication;
 
@@ -29,7 +29,7 @@ public class CommentDao {
 
 	}
 
-	public void insert(Connection connection, Message message) {
+	public void insert(Connection connection, Comment comments) {
 
 		log.info(new Object() {
 		}.getClass().getEnclosingClass().getName() +
@@ -39,13 +39,13 @@ public class CommentDao {
 		PreparedStatement ps = null;
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO comments (");
+			sql.append("INSERT INTO comments ( ");
 			sql.append("    text, ");
 			sql.append("    user_id, ");
 			sql.append("    message_id, ");
 			sql.append("    created_date, ");
 			sql.append("    updated_date ");
-			sql.append(") VALUES (");
+			sql.append(") VALUES ( ");
 			sql.append("    ?, ");
 			sql.append("    ?, ");
 			sql.append("    ?, ");
@@ -55,9 +55,9 @@ public class CommentDao {
 
 			ps = connection.prepareStatement(sql.toString());
 
-			ps.setString(1, message.getText()); // text
-			ps.setInt(2, message.getUserId()); // user_id
-			ps.setInt(3, message.getId()); // message_id
+			ps.setString(1, comments.getText()); // text
+			ps.setInt(2, comments.getUserId()); // user_id
+			ps.setInt(3, comments.getMessageId()); // message_id
 
 			ps.executeUpdate();
 		} catch (SQLException e) {

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 
-import chapter6.beans.Message;
+import chapter6.beans.Comment;
 import chapter6.beans.User;
 import chapter6.logging.InitApplication;
 import chapter6.service.CommentService;
@@ -52,36 +52,36 @@ public class CommentServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		List<String> errorMessages = new ArrayList<>();
 		String comment = request.getParameter("comment");
-		int messageId = Integer.parseInt(request.getParameter("messageId"));
+		String strMessageId = request.getParameter("messageId");
+		int messageId = Integer.parseInt(strMessageId);
 
 		//もしコメントが有効でない場合、if文の中の処理が実行される ！があれば、コメントが正しかった場合の処理になる
 		if (!isValid(comment, errorMessages)) {
 			// バリデーションエラーがあった場合、エラーメッセージをセット
-			request.setAttribute("errorMessages", errorMessages);
+			//リクエストスコープにerrorMessagesという名前で、エラーメッセージ一覧を保存している
+			session.setAttribute("errorMessages", errorMessages);
+			// エラーメッセージを再度表示し、画面に戻る→サーバー内部で動きたいので、リダイレクト
+	        //session.setAttribute("comments", comment);
 			response.sendRedirect("./");
 			return;
-
 		}
-
-		//リクエストスコープにerrorMessagesという名前で、エラーメッセージ一覧を保存している
-		request.setAttribute("errorMessages", errorMessages);
-		//Messageクラスのインスタンスを新しく作っている
-		Message message = new Message();
-		//作成したメッセージにメッセージIDを設定している
-		message.setId(messageId);
-		//ユーザーが入力したコメントをmessageにセットしている
-		message.setText(comment);
 
 		//sessionから、ログイン中のユーザー情報を取得
 		User user = (User) session.getAttribute("loginUser");
+		//Messageクラスのインスタンスを新しく作っている
+		Comment comments = new Comment();
+		//作成したメッセージにメッセージIDを設定している
+		comments.setMessageId(messageId);
+		//ユーザーが入力したコメントをmessageにセットしている
+		comments.setText(comment);
 		// メッセージに、ログインしているユーザーのIDを紐づける
-		message.setUserId(user.getId());
+		comments.setUserId(user.getId());
 
 		//コメントの更新
-		new CommentService().insert(message);
-		response.sendRedirect("top.jsp");
+		new CommentService().insert(comments);
+		//TopServletのdoGetを通る
+		response.sendRedirect("./");
 	}
-
 
 	private boolean isValid(String comment, List<String> errorMessages) {
 		log.info(new Object() {
@@ -96,9 +96,12 @@ public class CommentServlet extends HttpServlet {
 		// 140文字を超えている場合
 		else if (comment.length() > 140) {
 			errorMessages.add("140文字以下で入力してください");
-		}
 
+		}
+		if (errorMessages.size() != 0) {
+			return false;
+		}
 		// バリデーションが通らない場合はエラーメッセージリストが返る
-		return errorMessages.isEmpty();
+		return true;
 	}
 }
