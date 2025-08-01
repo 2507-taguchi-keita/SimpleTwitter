@@ -19,6 +19,8 @@
 				</c:forEach>
 			</ul>
 		</div>
+		<%--変数を削除→sessionの情報（エラーメッセージ）を都度削除している --%>
+		<c:remove var="errorMessages" scope="session" />
 		</c:if>
 
     <form action="login" method="post"><br />

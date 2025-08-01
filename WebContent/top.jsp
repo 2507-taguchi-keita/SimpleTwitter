@@ -14,6 +14,7 @@
 		<a href="signup">登録する</a>
 	</c:if>
 	<c:if test="${ not empty loginUser }">
+	<%--テキストや画像をリンクさせる→リンク範囲をa要素のタグで囲って、リンク先のURLをhref属性の値として指定 --%>
 		<a href="./">ホーム</a>
 		<a href="setting">設定</a>
 		<a href="logout">ログアウト</a>
@@ -38,6 +39,13 @@
 <link href="./css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+    <div class="filter">
+        <form action="./" method="get">
+            <input type="date" name="startDate" value="${param.startDate}">
+            <input type="date" name="endDate" value="${param.endDate}">
+            <input type="submit" value="絞込">
+        </form>
+    </div>
 	<c:if test="${ not empty errorMessages }">
 		<div class="errorMessages">
 			<ul>
@@ -46,6 +54,7 @@
 				</c:forEach>
 			</ul>
 		</div>
+		<%--変数を削除→sessionの情報（エラーメッセージ）を都度削除している --%>
 		<c:remove var="errorMessages" scope="session" />
 	</c:if>
 
@@ -59,11 +68,12 @@
 			</form>
 		</c:if>
 	</div>
-	<div class="messages">
+	<div class="messages" style="margin-bottom: 10px;">
 	<%--forEachは繰り返し文 Servletから受け取ったList<UserMessage>型のmessagesを、messageという形に格納 --%>
 		<c:forEach items="${messages}" var="message">
 			<div class="message">
 				<div class="account-name">
+				<%--文章の一部をグループ化するためのインラインの範囲を示す --%>
 					<span class="account">
 					<%--messageのuserIdを表示する --%>
 					<a href="./?user_id=<c:out value="${message.userId}"/> "> <c:out
@@ -72,25 +82,24 @@
 					</span> <span class="name"><c:out value="${message.name}" /></span>
 				</div>
 				<div class="text" style="white-space: pre-wrap;"><c:out value="${message.text}" /></div>
-				<div class="date">
+				<div class="date" style="margin-bottom: 6px;">
 					<fmt:formatDate value="${message.createdDate}"
 						pattern="yyyy/MM/dd HH:mm:ss" />
 				</div>
+				<%--<c:if>タグのtest属性に記述した条件が一致した場合に、<c:if>から</c:if>までの内容を実行--%>
 				<c:if test="${loginUser.id == message.userId}">
-					<form action="deleteMessage" method="post">
+					<form action="deleteMessage" method="post" style="display:inline-block; margin-right:5px;">
 						<input name="messageId" value="${message.id}" type="hidden"/>
 						<input type="submit" value="削除">
 					</form>
-				</c:if>
-				<c:if test="${loginUser.id == message.userId}">
-					<form action="edit" method="get">
+					<form action="edit" method="get" style="display:inline-block;">
 						<input name="messageId" value="${message.id}" type="hidden"/>
 						<input type="submit" value="編集">
 					</form>
 				</c:if>
 			</div>
 			<%--返信したメッセージを表示 --%>
-			 <div class="comments">
+			 <div class="comments" style="margin-bottom: 6px;">
 				<c:forEach items="${comments}" var="comment">
 					<c:if test="${comment.messageId == message.id}">
 						<div class="comment">
@@ -98,20 +107,20 @@
 							<a href="./?user_id=<c:out value="${message.userId}"/> "> <c:out
 								value="${comment.account}" />
 							</a>
+							<%--c:out（変数を出力）→comment.nameを出力--%>
 							</span><span class="name"><c:out value="${comment.name}" /></span>
 							<div class="text" style="white-space: pre-wrap;"><c:out value="${comment.text}" /></div>
 								<div class="date">
+								<%--<fmt:formatDate>タグは、日付のフォーマットを行うタグ --%>
 									<fmt:formatDate value="${comment.createdDate}" pattern="yyyy/MM/dd HH:mm:ss" />
 								</div>
 						</div>
 					</c:if>
 				</c:forEach>
 			</div>
-
 			<!-- 返信フォーム -->
 			<c:if test="${isShowMessageForm}">
 				<form action="comment" method="post">
-					<label>このつぶやきに返信</label><br />
 					<textarea name="comment" cols="100" rows="5" class="tweet-box"></textarea><br />
 					<input type="hidden" name="messageId" value="${message.id}" />
 					<input type="submit" value="返信">（140文字まで）

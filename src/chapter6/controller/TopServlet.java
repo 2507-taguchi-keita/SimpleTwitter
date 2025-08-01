@@ -58,12 +58,14 @@ public class TopServlet extends HttpServlet {
 		}
 
 		String userId = request.getParameter("user_id");
-		//messages→つぶやきの事を指す
-		List<UserMessage> messages = new MessageService().select(userId);
+		String startDate = request.getParameter("startDate");
+		String endDate = request.getParameter("endDate");
 
-		List<UserComment> comments = new CommentService().select();
+		//messages→つぶやきの事を指す
+		List<UserMessage> messages = new MessageService().select(userId, startDate, endDate);
 
 		String comment = request.getParameter("comment");
+		List<UserComment> comments = new CommentService().select();
 
 		request.setAttribute("messages", messages);
 		request.setAttribute("comments", comments);
@@ -71,31 +73,3 @@ public class TopServlet extends HttpServlet {
 		request.getRequestDispatcher("/top.jsp").forward(request, response);
 	}
 }
-
-//	@Override
-//	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-//            throws IOException, ServletException {
-//
-//	  log.info(new Object(){}.getClass().getEnclosingClass().getName() +
-//        " : " + new Object(){}.getClass().getEnclosingMethod().getName());
-//
-//        HttpSession session = request.getSession();
-//        List<String> errorMessages = new ArrayList<String>();
-//
-//        String comment = request.getParameter("comment");
-//        if (!isValid(comment, errorMessages)) {
-//            session.setAttribute("errorMessages", errorMessages);
-//            response.sendRedirect("./");
-//            return;
-//        }
-//
-//        Message message = new Message();
-//        message.setText(comment);
-//
-//        User user = (User) session.getAttribute("loginUser");
-//        message.setUserId(user.getId());
-//
-//        new CommentService().insert(message);
-//        response.sendRedirect("./");
-//    }
-//}
