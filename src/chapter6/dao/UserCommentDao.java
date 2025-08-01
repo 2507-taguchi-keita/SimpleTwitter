@@ -32,7 +32,7 @@ public class UserCommentDao {
 
 	}
 
-	public List<UserComment> select(Connection connection, int num){
+	public List<UserComment> select(Connection connection, int num) {
 		log.info(new Object() {
 		}.getClass().getEnclosingClass().getName() +
 				" : " + new Object() {

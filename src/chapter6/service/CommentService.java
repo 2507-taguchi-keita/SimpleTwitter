@@ -56,7 +56,7 @@ public class CommentService {
 		}
 	}
 
-	public List<UserComment> select(){
+	public List<UserComment> select() {
 		log.info(new Object() {
 		}.getClass().getEnclosingClass().getName() +
 				" : " + new Object() {

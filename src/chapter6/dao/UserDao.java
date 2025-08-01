@@ -132,7 +132,7 @@ public class UserDao {
 			while (rs.next()) {
 				//1つbeanを展開
 				User user = new User();
-				
+
 				//rs(実行結果)を、userにset
 				user.setId(rs.getInt("id"));
 				user.setAccount(rs.getString("account"));
@@ -172,15 +172,14 @@ public class UserDao {
 
 			//toUsers…ResultSet型(実行結果)を、listのuser型に詰替え
 			List<User> users = toUsers(rs);
-			
-			
+
 			if (users.isEmpty()) {
 				return null;
 			} else if (2 <= users.size()) {
 				log.log(Level.SEVERE, "ユーザーが重複しています", new IllegalStateException());
 				throw new IllegalStateException("ユーザーが重複しています");
 			} else {
-				
+
 				return users.get(0);
 			}
 		} catch (SQLException e) {
@@ -246,30 +245,30 @@ public class UserDao {
 	 */
 	public User select(Connection connection, String account) {
 
-	    PreparedStatement ps = null;
-	    try {
-	        String sql = "SELECT * FROM users WHERE account = ?";
+		PreparedStatement ps = null;
+		try {
+			String sql = "SELECT * FROM users WHERE account = ?";
 
-	        ps = connection.prepareStatement(sql);
-	        ps.setString(1, account);
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, account);
 
-	        ResultSet rs = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
-	        List<User> users = toUsers(rs);
-	        if (users.isEmpty()) {
-	            return null;
-	            //同じユーザーの情報（滅多に起きないが、万が一として）
-	        } else if (2 <= users.size()) {
-	            throw new IllegalStateException("ユーザーが重複しています");
-	            //問題無い場合、SELECT文が情報を取得する
-	        } else {
-	            return users.get(0);
-	        }
-	    } catch (SQLException e) {
-	        throw new SQLRuntimeException(e);
-	    } finally {
-	        close(ps);
-	    }
+			List<User> users = toUsers(rs);
+			if (users.isEmpty()) {
+				return null;
+				//同じユーザーの情報（滅多に起きないが、万が一として）
+			} else if (2 <= users.size()) {
+				throw new IllegalStateException("ユーザーが重複しています");
+				//問題無い場合、SELECT文が情報を取得する
+			} else {
+				return users.get(0);
+			}
+		} catch (SQLException e) {
+			throw new SQLRuntimeException(e);
+		} finally {
+			close(ps);
+		}
 	}
 
 }

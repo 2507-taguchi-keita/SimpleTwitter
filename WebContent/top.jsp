@@ -40,12 +40,12 @@
 </head>
 <body>
     <div class="filter">
-        <form action="./" method="get">
-            <input type="date" name="startDate" value="${param.startDate}">
-            <input type="date" name="endDate" value="${param.endDate}">
-            <input type="submit" value="絞込">
-        </form>
-    </div>
+		<form action="./" method="get">
+			<input type="date" name="startDate" value="${param.startDate}">
+			<input type="date" name="endDate" value="${param.endDate}">
+			<input type="submit" value="絞込">
+		</form>
+	</div>
 	<c:if test="${ not empty errorMessages }">
 		<div class="errorMessages">
 			<ul>
@@ -104,16 +104,18 @@
 					<c:if test="${comment.messageId == message.id}">
 						<div class="comment">
 							<span class="account">
-							<a href="./?user_id=<c:out value="${message.userId}"/> "> <c:out
+								<a href="./?user_id=<c:out value="${message.userId}"/> "> <c:out
 								value="${comment.account}" />
-							</a>
+								</a>
 							<%--c:out（変数を出力）→comment.nameを出力--%>
-							</span><span class="name"><c:out value="${comment.name}" /></span>
+							</span>
+							<span class="name"><c:out value="${comment.name}" />
+							</span>
 							<div class="text" style="white-space: pre-wrap;"><c:out value="${comment.text}" /></div>
-								<div class="date">
-								<%--<fmt:formatDate>タグは、日付のフォーマットを行うタグ --%>
-									<fmt:formatDate value="${comment.createdDate}" pattern="yyyy/MM/dd HH:mm:ss" />
-								</div>
+							<div class="date">
+							<%--<fmt:formatDate>タグは、日付のフォーマットを行うタグ --%>
+								<fmt:formatDate value="${comment.createdDate}" pattern="yyyy/MM/dd HH:mm:ss" />
+							</div>
 						</div>
 					</c:if>
 				</c:forEach>

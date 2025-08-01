@@ -91,7 +91,6 @@ public class SignUpServlet extends HttpServlet {
 		//SELECT文で、usersテーブルからユーザーの情報を取得し、同じ名前のアカウントが無いかを調べる
 		//UserServiceやUserDaoに入っているSQL文
 
-
 		log.info(new Object() {
 		}.getClass().getEnclosingClass().getName() +
 				" : " + new Object() {
@@ -117,7 +116,7 @@ public class SignUpServlet extends HttpServlet {
 
 		//同じアカウントがあったら１，なければ０
 		//「アカウント名は他の誰かが使っているか」を確認。
-		if(accountCheck != null) {
+		if (accountCheck != null) {
 			errorMessages.add("すでに存在するアカウントです");
 		}
 

@@ -61,7 +61,6 @@ public class CommentServlet extends HttpServlet {
 			//リクエストスコープにerrorMessagesという名前で、エラーメッセージ一覧を保存している
 			session.setAttribute("errorMessages", errorMessages);
 			// エラーメッセージを再度表示し、画面に戻る→サーバー内部で動きたいので、リダイレクト
-	        //session.setAttribute("comments", comment);
 			response.sendRedirect("./");
 			return;
 		}
